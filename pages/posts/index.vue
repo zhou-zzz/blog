@@ -46,7 +46,7 @@ const articlesGroupedByYear = groupBy<Post>(getYear, articles)
           v-for="route of routes" :key="route._path" :to="route._path"
           class="block font-normal mb-6 mt-2 no-underline op70 hover:op100"
         >
-          <li class="no-underline" flex="~ col md:row gap-2 md:items-center">
+          <li class="no-underline font-500" flex="~ col md:row gap-2 md:items-center">
             <div class="title text-lg leading-1.2em" flex="~ gap-2 wrap">
               <span
                 v-if="route.type"
