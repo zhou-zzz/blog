@@ -3,10 +3,14 @@ import dayjs from 'dayjs'
 import type { Post } from '~/types/types'
 
 const articles = await queryContent('/posts').find() as Post[]
+const sortArticles = articles.sort((a, b) => +new Date(b.date) - +new Date(a.date))
 
-function groupBy<T>(key: string | ((item: T) => string), data: T[]): Map<string, T[]> {
+type GroupByKey<T> = string | ((item: T) => string)
+function groupBy<T>(key: GroupByKey<T>, data: T[]): Map<string, T[]> {
+  if (typeof key === 'string')
+    key = (item: T) => (item as any)[key as string]
   return data.reduce((map, obj) => {
-    const val = typeof key === 'function' ? key(obj) : (obj as any)[key]
+    const val = (key as (item: T) => string)(obj)
     const prev = map.get(val)
     if (prev)
       prev.push(obj)
@@ -24,7 +28,8 @@ function formatDate(d: string | Date) {
   const date = dayjs(d)
   return date.format('MMM D')
 }
-const articlesGroupedByYear = groupBy<Post>(getYear, articles)
+
+const articlesGroupedByYear = groupBy<Post>(getYear, sortArticles)
 </script>
 
 <template>
