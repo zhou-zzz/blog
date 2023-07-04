@@ -14,7 +14,7 @@ description: 在线预览pdf
   :src="pdfUrl"
   width="100%"
   height="100%"
->
+/>
 ```
 
 由于之前的接口传回来是pdf的在线地址，而现在的接口传回来的是二进制数据，于是我又通过下边的代码生成url。
@@ -44,7 +44,7 @@ const pdfUrl = window.URL.createObjectURL(blob)
 </object>
 ```
 除了以上方法外，还可以使用第三方插件，这里我用的pdf.js，在官网下载解压，然后在iframe的url中加上你的pdf.js插件所在位置作为前缀即可。其中需要注意的是：
-1、通过blob数据转换的url需要encodeURIComponent
+1、通过blob数据转换的url需要encodeURIComponent  
 2、前缀需要注意（自己的项目是放在static目录下）
 ```ts
 const url = encodeURIComponent(window.URL.createObjectURL(blob))
