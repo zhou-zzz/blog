@@ -73,7 +73,7 @@ const groupPost = groupBy<Post>(getYear, post)
 //   '2021' => [ { title: 'z', date: '2021-2-1', type: 'ts' } ]
 // }
 ```
-结合以上两种代码，一个比较通用的分组函数就出来了，最终代码如下：
+分组函数的功能不能只满足于一种情况，得既满足传简单字符串key又满足复杂自定义key的情况，最终代码如下：
 ```ts
 type GroupByKey<T> = string | ((item: T) => string)
 
@@ -93,4 +93,4 @@ function groupBy<T>(key: GroupByKey<T>, data: T[]): Map<string, T[]> {
 ```
 
 ## 总结
-1、参数归一化，在最终代码上我加了一个判断把字符串key变成一个函数，这样做的好处就是不再改动之前的代码逻辑了
+1、参数归一化，入参的key有两种一种字符串、一种函数，为了不改动后边的代码，把字符串key也变成一个函数。
