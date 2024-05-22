@@ -1,3 +1,4 @@
+import process from 'node:process'
 import { appDescription } from './constants/index'
 
 export default defineNuxtConfig({

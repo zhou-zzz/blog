@@ -21,6 +21,5 @@ catch {
         <Back />
       </article>
     </template>
-    <template />
   </ClientOnly>
 </template>

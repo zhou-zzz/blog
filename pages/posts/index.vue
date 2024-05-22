@@ -38,7 +38,7 @@ const articlesGroupedByYear = groupBy<Post>(getYear, sortArticles)
     <ul>
       <template v-if="!articlesGroupedByYear.size">
         <div py2 op50>
-          { nothing here yet }
+          { '没有' }
         </div>
       </template>
       <template v-for="[key, routes] of articlesGroupedByYear" :key="key">

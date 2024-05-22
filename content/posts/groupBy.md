@@ -1,13 +1,13 @@
 ---
 title: 分组函数
 date: 2022-12-5
-tag: ['TS']
+tag: ['Ts']
 description: 动手实现一个分组函数
 ---
 
 ## 关于分组函数的思考
 
-起因：我想给博客的文章分个组  
+起因：我想给博客的文章分个组
 于是脑海里就开始构思出一份代码，拿到需要分组的key，用数组的reduce方法就可以了。
 ```ts
 function groupBy<T>(key: string, data: T[]): Map<string, T[]> {
