@@ -1,20 +1,63 @@
-<script setup ts>
+<script setup lang="ts">
 const route = useRoute()
 const router = useRouter()
-const page = ref()
+const page = ref<any>()
+const isNotFound = ref(false)
 
-try {
-  page.value = await queryContent(route.path).findOne()
+async function fetchPage() {
+  try {
+    page.value = await queryContent(route.path).findOne()
+    isNotFound.value = false
+  }
+  catch (err) {
+    console.error(`页面未找到: ${route.path}`, err)
+    isNotFound.value = true
+    page.value = await get404Page()
+
+    if (route.path !== '/404')
+      router.replace('/404')
+  }
 }
-catch {
-  page.value = await queryContent('/404').findOne()
-  router.replace('/404')
+
+async function get404Page() {
+  try {
+    return await queryContent('/404').findOne()
+  }
+  catch (error) {
+    console.error('404页面未找到:', error)
+    return {
+      title: '页面未找到',
+      body: '抱歉，您访问的页面不存在。',
+    }
+  }
 }
+
+await fetchPage()
 </script>
 
 <template>
   <ClientOnly>
-    <template v-if="page">
+    <template v-if="!page">
+      <div class="flex justify-center items-center min-h-screen">
+        <div class="animate-pulse">
+          加载中...
+        </div>
+      </div>
+    </template>
+
+    <template v-else-if="isNotFound">
+      <article class="m-auto max-w-prose px-7 py-10">
+        <h1 class="text-4xl font-bold mb-4">
+          {{ page.title }}
+        </h1>
+        <p class="text-gray-500">
+          {{ page.body }}
+        </p>
+        <Back />
+      </article>
+    </template>
+
+    <template v-else>
       <Plum v-if="page.plum" />
       <article class="m-auto max-w-prose px-7 py-10 slide-enter-content animate-delay-200">
         <ContentRenderer :value="page" />

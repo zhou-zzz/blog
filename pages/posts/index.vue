@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import usePagination from '~/hooks/usePagination'
 import type { Post } from '~/types/types'
 
 const articles = await queryContent('/posts').find() as Post[]
@@ -29,7 +30,10 @@ function formatDate(d: string | Date) {
   return date.format('MMM D')
 }
 
-const articlesGroupedByYear = groupBy<Post>(getYear, sortArticles)
+const { currentPage, totalPages, paginatedItems: currentPageArticles, nextPage, prevPage }
+  = usePagination(sortArticles, 10)
+
+const articlesGroupedByYear = computed(() => groupBy<Post>(getYear, currentPageArticles.value))
 </script>
 
 <template>
@@ -78,6 +82,30 @@ const articlesGroupedByYear = groupBy<Post>(getYear, sortArticles)
         </NuxtLink>
       </template>
     </ul>
+    <!-- 添加分页控制器 -->
+    <div class="flex justify-center items-center gap-3 mt-12">
+      <button
+        class="w-8 h-8 flex items-center justify-center rounded-full transition-colors duration-300 hover:bg-zinc-200/10 disabled:opacity-30 disabled:cursor-not-allowed"
+        :disabled="currentPage === 1"
+        @click="prevPage"
+      >
+        <div class="i-carbon-chevron-left text-xl" />
+      </button>
+
+      <div class="flex items-center gap-2 text-sm op60">
+        <span class="font-medium">{{ currentPage }}</span>
+        <span class="op50">/</span>
+        <span>{{ totalPages }}</span>
+      </div>
+
+      <button
+        class="w-8 h-8 flex items-center justify-center rounded-full transition-colors duration-300 hover:bg-zinc-200/10 disabled:opacity-30 disabled:cursor-not-allowed"
+        :disabled="currentPage === totalPages"
+        @click="nextPage"
+      >
+        <div class="i-carbon-chevron-right text-xl" />
+      </button>
+    </div>
     <Back />
   </main>
 </template>
