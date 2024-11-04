@@ -4,6 +4,14 @@ const router = useRouter()
 const page = ref<any>()
 const isNotFound = ref(false)
 
+// 提取所有级别的标题
+const headers = computed(() => {
+  if (!page.value?._dir)
+    return []
+  const headings = page.value.body.toc?.links || []
+  return headings
+})
+
 async function fetchPage() {
   try {
     page.value = await queryContent(route.path).findOne()
@@ -58,11 +66,26 @@ await fetchPage()
     </template>
 
     <template v-else>
-      <Plum v-if="page.plum" />
-      <article class="m-auto max-w-prose px-7 py-10 slide-enter-content animate-delay-200">
-        <ContentRenderer :value="page" />
-        <Back />
-      </article>
+      <div class="relative">
+        <Plum v-if="page.plum" />
+        <article class="m-auto max-w-prose px-7 py-10 slide-enter-content animate-delay-200">
+          <ContentRenderer :value="page" />
+          <Back />
+        </article>
+        <TableOfContents
+          v-if="headers && headers.length > 0"
+          :headers="headers"
+          class="hidden lg:block"
+        />
+      </div>
     </template>
   </ClientOnly>
 </template>
+
+<style>
+@media (min-width: 1024px) {
+  article {
+    margin-right: 16rem;
+  }
+}
+</style>
