@@ -10,11 +10,18 @@ useHead({
 })
 
 function toggleDark(event: MouseEvent) {
-  const isAppearanceTransition = document.startViewTransition
-    && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-
-  if (!isAppearanceTransition)
+  // 检查浏览器是否支持 View Transition API
+  if (!document.startViewTransition) {
+    // 降级方案：直接切换主题
+    color.preference = color.value === 'dark' ? 'light' : 'dark'
     return
+  }
+
+  // 检查用户是否开启了减少动画选项
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    color.preference = color.value === 'dark' ? 'light' : 'dark'
+    return
+  }
 
   const x = event.clientX
   const y = event.clientY
@@ -22,11 +29,13 @@ function toggleDark(event: MouseEvent) {
     Math.max(x, innerWidth - x),
     Math.max(y, innerHeight - y),
   )
+
   // @ts-expect-error: Transition API
   const transition = document.startViewTransition(async () => {
     color.preference = color.value === 'dark' ? 'light' : 'dark'
     await nextTick()
   })
+
   transition.ready
     .then(() => {
       const clipPath = [
