@@ -12,7 +12,7 @@ description: 作用域与闭包
 ### 1.词法作用域（静态作用域）
 词法作用域（静态作用域）是 JavaScript 采用的作用域模式，它的作用域是在代码编写时就确定的。
 
-```js
+```javascript
 const val = 'global'
 function foo() {
   const val = 'local'
@@ -28,7 +28,7 @@ foo()
 ### 2.动态作用域
 动态作用域是由函数调用时的调用栈决定的，而不是由函数定义的位置决定。
 
-```js
+```javascript
 const value = '全局'
 function foo() {
   console.log(value)
@@ -64,7 +64,7 @@ bar() // 输出: "全局"
 
 ES6 引入了 `let` 和 `const` 关键字，它们可以在块级作用域中声明变量。块级作用域是指在代码块（如 `if` 语句、`for` 循环、`while` 循环等）中声明的变量，其作用域仅限于该代码块。
 
-```js
+```javascript
 if (true) {
   const blockVar = 'block scope'
 }
@@ -83,7 +83,7 @@ console.log(blockVar) // ReferenceError: blockVar is not defined
 ### 5. 变量提升
 
 变量提升是指在代码执行前，变量会被提升到其作用域的顶部。
-```js
+```javascript
 console.log(a) // undefined
 var a = 1
 // 等同于
@@ -95,10 +95,33 @@ a = 1
 console.log(b) // ReferenceError: b is not defined
 let b = 2
 ```
+```javascript
+console.log(a) // function a() { console.log('1') }
+var a = 1
+function a() {
+  console.log('1')
+}
+
+// 等同于
+// 1. 首先是函数声明提升
+function a() {
+  console.log('1')
+}
+
+// 2. 然后是变量声明提升（由于已经有同名函数，这个声明会被忽略）
+var a
+
+// 3. 代码按顺序执行
+console.log(a) // 输出函数，因为此时 a 指向函数声明
+a = 1 // 这里才是赋值操作
+```
+
+**JavaScript 的变量提升（Hoisting）和函数声明优先的规则**
+
 ## 二、闭包深入解析
 ### 1. 闭包的定义和原理
 闭包是指一个函数可以记住并访问其所在的词法作用域，即使该函数在其他地方执行。
-```js
+```javascript
 function createCounter() {
   let count = 0
   return function () {
@@ -119,7 +142,7 @@ console.log(counter()) // 2
    - 这个内部函数保持对 `count` 变量的引用
 
 2. **内存中的状态**
-   ```js
+   ```javascript
    counter = {
      [[Scope]]: { // 闭包的作用域链
        count: 0, // 私有变量
@@ -172,7 +195,7 @@ console.log(counter()) // 2
 
 #### 最佳实践
 1. 及时清除不再使用的闭包引用
-```js
+```javascript
 function foo() {
   const heavyData = Array.from({ length: 1000000 }).fill('data')
   return function () {
@@ -184,7 +207,7 @@ let heavyData = foo()
 heavyData = null
 ```
 2. 避免循环引用
-```js
+```javascript
 // bad
 function foo() {
   const obj = {} // 创建一个对象
@@ -196,7 +219,7 @@ function foo() {
 }
 const result = foo()
 // 此时形成了循环引用：
-// result.closure 引用了闭包函数
+// result.bar 引用了闭包函数
 // 闭包函数引用了 obj
 // obj 就是 result 本身
 ```
@@ -207,7 +230,7 @@ const result = foo()
 3. 形成了相互引用的环
 4. 即使不再使用 result，垃圾回收器也很难回收这些内存
 ```
-```js
+```javascript
 // good
 function foo() {
   const obj = {}
@@ -227,7 +250,7 @@ function foo() {
 4. 便于垃圾回收
 ```
 3. 在适当的时机手动解除引用
-```js
+```javascript
 function setupHandler() {
   let element = document.getElementById('button')
   let heavyData = Array.from({ length: 1000000 })
@@ -248,7 +271,7 @@ const cleanup = setupHandler()
 cleanup()
 ```
 4. 使用 WeakMap/WeakSet 存储对象引用
-```js
+```javascript
 // 使用 WeakMap 存储私有数据
 const privateData = new WeakMap()
 class MyClass {
