@@ -1,15 +1,15 @@
 ---
 title: 分组函数
-date: 2022-12-5
+date: 2023-01-05
 tag: ['Ts']
 description: 动手实现一个分组函数
 ---
 
 ## 关于分组函数的思考
 
-起因：我想给博客的文章分个组
-于是脑海里就开始构思出一份代码，拿到需要分组的key，用数组的reduce方法就可以了。
-```ts
+在管理博客文章时，我希望能够根据不同的属性对文章进行分组。最初，我使用了数组的 `reduce` 方法来实现这一功能。
+
+```typescript
 function groupBy<T>(key: string, data: T[]): Map<string, T[]> {
   return data.reduce((map, obj) => {
     const val = (obj as any)[key] // 获取key
@@ -18,6 +18,7 @@ function groupBy<T>(key: string, data: T[]): Map<string, T[]> {
       prev.push(obj)
     else
       map.set(val, [obj])
+
     return map
   }, new Map<string, T[]>())
 }
@@ -45,8 +46,10 @@ const groupPost = groupBy<Post>('type', post)
 //   'react' => [ { title: 'y', date: '2023-1-1', type: 'react' } ]
 // }
 ```
-写完后，感觉生成这个代码的key太固定了，不够灵活，假如我想要按照年份分组的话那上边这个函数就不满足了，于是我又想着可以传个函数进去生成自己想要的key。
-```ts
+
+然而，这种方法的分组 key 是固定的，无法满足按年份分组的需求。因此，我决定通过传入一个函数来自定义分组的 key。
+
+```typescript
 function groupBy<T>(key: (item: T) => string, data: T[]): Map<string, T[]> {
   return data.reduce((map, obj) => {
     const val = key(obj)
@@ -55,6 +58,7 @@ function groupBy<T>(key: (item: T) => string, data: T[]): Map<string, T[]> {
       prev.push(obj)
     else
       map.set(val, [obj])
+
     return map
   }, new Map<string, T[]>())
 }
@@ -73,13 +77,16 @@ const groupPost = groupBy<Post>(getYear, post)
 //   '2021' => [ { title: 'z', date: '2021-2-1', type: 'ts' } ]
 // }
 ```
-分组函数的功能不能只满足于一种情况，得既满足传简单字符串key又满足复杂自定义key的情况，最终代码如下：
-```ts
+
+为了让分组函数更加通用，我希望它既能接受简单的字符串 key，也能处理复杂的自定义 key。最终的实现如下：
+
+```typescript
 type GroupByKey<T> = string | ((item: T) => string)
 
 function groupBy<T>(key: GroupByKey<T>, data: T[]): Map<string, T[]> {
   if (typeof key === 'string')
     key = (item: T) => (item as any)[key as string]
+
   return data.reduce((map, obj) => {
     const val = (key as (item: T) => string)(obj)
     const prev = map.get(val)
@@ -87,10 +94,14 @@ function groupBy<T>(key: GroupByKey<T>, data: T[]): Map<string, T[]> {
       prev.push(obj)
     else
       map.set(val, [obj])
+
     return map
   }, new Map<string, T[]>())
 }
 ```
 
 ## 总结
-1、参数归一化，入参的key有两种一种字符串、一种函数，为了不改动后边的代码，把字符串key也变成一个函数。
+
+1. 参数归一化：通过将字符串 key 转换为函数，统一了参数的处理方式，简化了后续代码的实现。
+
+通过这样的设计，分组函数变得更加灵活和强大，能够适应不同的分组需求。希望这段代码对你有所帮助！

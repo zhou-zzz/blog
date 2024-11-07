@@ -3,10 +3,15 @@ title: pdf预览
 date: 2023-06-29
 description: 在线预览pdf
 ---
+# 前端预览 PDF 的几种方式
 
-# 前端预览pdf的几种方式
-最近做了一个签章功能的业务需求，其中有个功能要求预览签章过后的文件。
-因为之前也实现过这个需求，于是立马就写出这个预览组件，通过h5标签embed，直接获取地址传给这个组件。
+在开发过程中，我们经常会遇到需要在网页上预览 PDF 文件的需求。本文将总结几种常用的前端 PDF 预览方法，帮助开发者在不同场景下选择合适的技术方案。
+
+## 1. 使用 HTML 标签
+
+### 1.1 使用 `<embed>` 标签
+
+`<embed>` 标签可以直接嵌入 PDF 文件，简单易用。
 
 ```vue
 <embed
@@ -17,13 +22,9 @@ description: 在线预览pdf
 />
 ```
 
-由于之前的接口传回来是pdf的在线地址，而现在的接口传回来的是二进制数据，于是我又通过下边的代码生成url。
+### 1.2 使用 `<iframe>` 标签
 
-```ts
-const pdfUrl = window.URL.createObjectURL(blob)
-```
-
-所有问题引刃而解，完成需求后，我想多总结几种预览pdf的方案，让以后的技术实现上有其他选择。在网上找到了一些方案，其中可以用iframe：
+`<iframe>` 标签也是一种常见的嵌入方式，适用于需要在页面中嵌入其他文档的场景。
 
 ```vue
 <iframe
@@ -33,7 +34,11 @@ const pdfUrl = window.URL.createObjectURL(blob)
 >
 </iframe>
 ```
-也可以通过object标签内嵌资源：
+
+### 1.3 使用 `<object>` 标签
+
+`<object>` 标签可以嵌入多种类型的资源，包括 PDF 文件。
+
 ```vue
 <object
   type="application/pdf"
@@ -43,15 +48,21 @@ const pdfUrl = window.URL.createObjectURL(blob)
 >
 </object>
 ```
-除了以上方法外，还可以使用第三方插件，这里我用的pdf.js，在官网下载解压，然后在iframe的url中加上你的pdf.js插件所在位置作为前缀即可。其中需要注意的是：
-1、通过blob数据转换的url需要encodeURIComponent
-2、前缀需要注意（自己的项目是放在static目录下）
+
+## 2. 使用第三方库
+
+### 2.1 PDF.js
+
+PDF.js 是一个强大的开源库，可以在网页上渲染 PDF 文件。使用 PDF.js 可以提高移动端的兼容性。
+
 ```ts
 const url = encodeURIComponent(window.URL.createObjectURL(blob))
 const pdfUrl = `static/pdf/web/viewer.html?file=${url}`
 ```
-然后将pdfUrl传给iframe即可。
 
-## 总结
-1、html标签有embed、object、iframe预览
-2、可结合第三方库如pdf.js实现预览（移动端上兼容较好，单纯用iframe移动端有坑）
+将生成的 `pdfUrl` 传递给 `<iframe>` 即可实现预览。
+
+## 3. 总结
+
+- HTML 标签（`<embed>`、`<iframe>`、`<object>`）适合简单的 PDF 预览需求，易于实现，但功能和样式有限。
+- PDF.js 适合需要自定义界面和功能的场景，尤其是在移动端需要更好兼容性时，但实现较为复杂。

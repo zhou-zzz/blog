@@ -1,6 +1,6 @@
 ---
 title: react-hooks
-date: 2024-01-10
+date: 2024-1-10
 tag: ['React']
 description: 常用reacthooks
 ---
