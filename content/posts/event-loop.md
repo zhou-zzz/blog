@@ -241,113 +241,28 @@ function updateUI() {
 }
 ```
 
-## 六、总结
-
-1. **事件循环的核心原则**：
-   - 同步代码优先执行
-   - 微任务优先于宏任务
-   - 每个宏任务之后都会清空微任务队列
-
-2. **最佳实践**：
-   - 避免长时间占用主线程
-   - 合理拆分大型任务
-   - 适当使用微任务和宏任务
-
-3. **性能优化要点**：
-   - 使用任务分割
-   - 避免过度使用微任务
-   - 合理使用 requestAnimationFrame
-   - 注意内存泄漏问题
-
-## 五、面试重点与实战
-
-### 1. 经典面试题解析
-
-#### 题目1：执行顺序
+### 3. 内存泄漏问题
 ```javascript
-console.log('1')
-
-setTimeout(() => {
-  console.log('2')
-}, 0)
-
-Promise.resolve().then(() => {
-  console.log('3')
-})
-
-async function foo() {
-  console.log('4')
-  await Promise.resolve()
-  console.log('5')
+// ❌ 可能造成内存泄漏
+let heavyData = null
+function processData() {
+  heavyData = Array.from({ length: 1000000 })
+  // 处理数据
 }
 
-foo()
-
-console.log('6')
-```
-
-> 🎯 考点分析：
-> - 宏任务与微任务的执行顺序
-> - async/await 的执行机制
-> - Promise 的处理时机
-
-解答：
-输出顺序：1 -> 4 -> 6 -> 3 -> 5 -> 2
-原因：
-1. 同步代码优先执行：1, 4, 6
-2. 微任务队列执行：3, 5（await 后续代码进入微任务队列）
-3. 宏任务队列执行：2
-
-#### 题目2：定时器执行
-```javascript
-console.log('start')
-
-setTimeout(() => {
-  console.log('timeout 1')
-  Promise.resolve().then(() => {
-    console.log('promise in timeout')
-  })
-}, 0)
-
-Promise.resolve().then(() => {
-  console.log('promise 1')
-  setTimeout(() => {
-    console.log('timeout 2')
-  }, 0)
-})
-
-console.log('end')
-```
-
-解答：
-输出顺序：start -> end -> promise 1 -> timeout 1 -> promise in timeout -> timeout 2
-
-### 2. 实际工作场景案例
-
-#### a) 性能优化：防抖实现
-```javascript
-function debounce(fn, delay) {
-  let timer = null
-
-  return function (...args) {
-    if (timer)
-      clearTimeout(timer)
-
-    timer = setTimeout(() => {
-      fn.apply(this, args)
-      timer = null
-    }, delay)
-  }
+// ✅ 及时清理内存
+function processData() {
+  const heavyData = Array.from({ length: 1000000 })
+  // 处理数据
+  heavyData = null // 处理完及时释放
 }
-
-// 使用示例
-const handleSearch = debounce((query) => {
-  // API 请求
-  fetch(`/api/search?q=${query}`)
-}, 300)
 ```
 
-#### b) 异步任务队列管理
+## 六、实战应用与面试题
+
+### 1. 实际工作场景案例
+
+#### a) 异步任务队列管理
 ```javascript
 class TaskQueue {
   constructor() {
@@ -357,12 +272,7 @@ class TaskQueue {
 
   addTask(task) {
     return new Promise((resolve, reject) => {
-      this.queue.push({
-        task,
-        resolve,
-        reject
-      })
-
+      this.queue.push({ task, resolve, reject })
       if (!this.running)
         this.run()
     })
@@ -370,7 +280,6 @@ class TaskQueue {
 
   async run() {
     this.running = true
-
     while (this.queue.length) {
       const { task, resolve, reject } = this.queue.shift()
       try {
@@ -381,107 +290,115 @@ class TaskQueue {
         reject(err)
       }
     }
-
     this.running = false
   }
 }
 ```
 
-### 3. 调试技巧
-
-#### 事件循环可视化
+#### b) 性能优化：防抖与节流
 ```javascript
-// 使用 async_hooks 模块追踪异步操作
-const async_hooks = require('node:async_hooks')
-const hook = async_hooks.createHook({
-  init(asyncId, type) {
-    console.log(`异步操作创建: ${type}`)
-  },
-  before(asyncId) {
-    console.log(`异步操作开始: ${asyncId}`)
-  },
-  after(asyncId) {
-    console.log(`异步操作结束: ${asyncId}`)
+// 防抖
+function debounce(fn, delay) {
+  let timer = null
+  return function (...args) {
+    if (timer)
+      clearTimeout(timer)
+    timer = setTimeout(() => {
+      fn.apply(this, args)
+      timer = null
+    }, delay)
   }
-})
-```
-
-#### 常见问题排查清单
-- [ ] 检查任务优先级
-- [ ] 验证微任务队列执行顺序
-- [ ] 确认定时器延迟是否符合预期
-- [ ] 检查异步操作的依赖关系
-
-### 4. 性能优化最佳实践
-
-1. **合理使用微任务**
-```javascript
-// 👎 不推荐
-function badPractice() {
-  Promise.resolve().then(() => {
-    // 大量计算
-    heavyComputation()
-  })
 }
 
-// 👍 推荐
-function goodPractice() {
-  if (isIdle()) {
-    requestIdleCallback(() => {
-      heavyComputation()
-    })
-  }
-  else {
-    setTimeout(heavyComputation, 0)
+// 节流
+function throttle(fn, delay) {
+  let lastTime = 0
+  return function (...args) {
+    const now = Date.now()
+    if (now - lastTime >= delay) {
+      fn.apply(this, args)
+      lastTime = now
+    }
   }
 }
 ```
 
-2. **避免任务阻塞**
+### 2. 经典面试题解析
+
+#### 题目1：执行顺序预测
 ```javascript
-// 👎 不推荐
-async function blockingOperation() {
-  const results = []
-  for (let i = 0; i < 1000000; i++)
-    results.push(await heavyTask())
+console.log('1')
+setTimeout(() => console.log('2'), 0)
+Promise.resolve().then(() => console.log('3'))
+async function foo() {
+  console.log('4')
+  await Promise.resolve()
+  console.log('5')
+}
+foo()
+console.log('6')
+
+// 输出: 1 -> 4 -> 6 -> 3 -> 5 -> 2
+```
+
+#### 题目2：Promise 与 async/await
+```javascript
+async function example() {
+  console.log('1')
+  await Promise.resolve()
+  console.log('2')
+  setTimeout(() => console.log('3'), 0)
 }
 
-// 👍 推荐
-async function nonBlockingOperation() {
-  const tasks = Array(1000000).fill(heavyTask)
-  const results = []
+console.log('4')
+example()
+console.log('5')
 
-  for (let i = 0; i < tasks.length; i += 100) {
-    const batch = tasks.slice(i, i + 100)
-    results.push(...await Promise.all(batch))
-    // 让出主线程
-    await new Promise(resolve => setTimeout(resolve, 0))
+// 输出: 4 -> 1 -> 5 -> 2 -> 3
+```
+
+## 七、性能优化最佳实践
+
+### 1. 任务分割与优先级控制
+```javascript
+function chunkedTask(items, process) {
+  const CHUNK_SIZE = 100
+  let index = 0
+
+  function doChunk() {
+    const chunk = items.slice(index, index + CHUNK_SIZE)
+    chunk.forEach(process)
+    index += CHUNK_SIZE
+
+    if (index < items.length)
+      requestIdleCallback(() => doChunk())
   }
+
+  doChunk()
 }
 ```
 
-## 六、扩展阅读
+### 2. 合理使用 requestAnimationFrame
+```javascript
+function smoothAnimation() {
+  let start = null
+  const duration = 1000
 
-1. [Node.js 事件循环详解](链接)
-2. [浏览器事件循环与渲染时机](链接)
-3. [微任务队列的优化策略](链接)
+  function animate(timestamp) {
+    if (!start)
+      start = timestamp
+    const progress = timestamp - start
 
-## 七、编码规范建议
+    // 执行动画
+    updateAnimation(progress / duration)
 
-1. 异步代码规范
-   - 优先使用 async/await
-   - 合理划分任务优先级
-   - 避免过深的回调嵌套
+    if (progress < duration)
+      requestAnimationFrame(animate)
+  }
 
-2. 性能考虑
-   - 控制微任务队列大小
-   - 避免长时间占用主线程
-   - 合理使用批处理
-
-3. 代码评审要点
-   - 检查异步操作的错误处理
-   - 验证任务执行顺序
-   - 确认性能优化措施
+  requestAnimationFrame(animate)
+}
+```
 
 > 🎯 面试重点总结：
 > 1. 理解事件循环的运行机制
