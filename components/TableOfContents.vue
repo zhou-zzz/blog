@@ -101,9 +101,9 @@ function getIndentStyle(depth: number) {
 
 <template>
   <ClientOnly>
-    <nav class="toc fixed right-4 top-20 w-64">
-      <div class="text-sm p-4 rounded-lg bg-white/80 dark:bg-gray-800/80 backdrop-blur">
-        <div class="font-bold mb-3 text-gray-900 dark:text-gray-100">
+    <nav class="toc fixed left-8 top-24 w-56">
+      <div class="text-sm p-3 transition-colors duration-200">
+        <div class="font-bold mb-2 text-gray-900 dark:text-white">
           目录
         </div>
         <ul class="space-y-2">
@@ -112,28 +112,23 @@ function getIndentStyle(depth: number) {
               <a
                 :href="`#${header.id}`"
                 :style="getIndentStyle(header.depth)"
-                class="block py-1 transition-colors duration-200 hover:text-primary-500"
-                :class="[
-                  activeId === header.id
-                    ? 'text-primary-500 font-medium'
-                    : 'text-gray-500 dark:text-gray-400',
-                ]"
+                class="block py-1 transition-colors duration-200 hover:text-primary-500 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-50"
+                :class="{
+                  'text-primary-500 font-medium': activeId === header.id,
+                }"
                 @click.prevent="scrollToHeader(header.id)"
               >
                 {{ header.text }}
               </a>
-              <!-- 递归渲染子标题 -->
               <ul v-if="header.children && header.children.length" class="space-y-2 mt-2">
                 <li v-for="child in header.children" :key="child.id">
                   <a
                     :href="`#${child.id}`"
                     :style="getIndentStyle(child.depth)"
-                    class="block py-1 transition-colors duration-200 hover:text-primary-500"
-                    :class="[
-                      activeId === child.id
-                        ? 'text-primary-500 font-medium'
-                        : 'text-gray-500 dark:text-gray-400',
-                    ]"
+                    class="block py-1 transition-colors duration-200 hover:text-primary-500 text-gray-500 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-50"
+                    :class="{
+                      'text-primary-500 font-medium': activeId === child.id,
+                    }"
                     @click.prevent="scrollToHeader(child.id)"
                   >
                     {{ child.text }}
@@ -150,10 +145,10 @@ function getIndentStyle(depth: number) {
 
 <style scoped>
 .toc {
-  max-height: calc(100vh - 120px);
+  max-height: calc(100vh - 140px);
   overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: rgba(156, 163, 175, 0.5) transparent;
+  scrollbar-color: rgba(156, 163, 175, 0.3) transparent;
 }
 
 .toc::-webkit-scrollbar {
@@ -165,8 +160,8 @@ function getIndentStyle(depth: number) {
 }
 
 .toc::-webkit-scrollbar-thumb {
-  background-color: rgba(156, 163, 175, 0.5);
-  border-radius: 2px;
+  background-color: rgba(156, 163, 175, 0.3);
+  border-radius: 4px;
 }
 
 /* 添加平滑滚动效果 */
