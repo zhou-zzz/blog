@@ -144,7 +144,135 @@ async function fetchUserData() {
 }
 ```
 
-## 四、性能优化策略
+## 四、DOM 更新与事件循环
+
+### 1. DOM 更新时机
+JavaScript 中的 DOM 更新与事件循环密切相关，遵循以下顺序：
+1. 同步代码执行
+2. 微任务队列清空
+3. DOM 渲染
+4. 宏任务执行
+
+### 2. 基础示例
+```javascript
+console.log('1') // 同步代码
+
+// DOM 更新
+document.body.style.background = 'red'
+
+Promise.resolve().then(() => {
+  console.log('2') // 微任务
+  // 再次 DOM 更新
+  document.body.style.background = 'blue'
+})
+
+console.log('3') // 同步代码
+
+// 输出顺序: 1 -> 3 -> 2
+// DOM 只渲染一次，显示蓝色背景
+```
+
+### 3. 加载状态管理最佳实践
+```javascript
+class LoadingManager {
+  constructor(element) {
+    this.element = element
+    this.states = ['加载中', '处理中', '完成']
+    this.currentIndex = 0
+  }
+
+  start() {
+    // 立即显示第一个状态
+    this.updateState()
+
+    // 使用 requestAnimationFrame 确保状态变化可见
+    const animate = () => {
+      if (this.currentIndex < this.states.length - 1) {
+        requestAnimationFrame(() => {
+          this.currentIndex++
+          this.updateState()
+          animate()
+        })
+      }
+    }
+
+    animate()
+  }
+
+  updateState() {
+    this.element.textContent = this.states[this.currentIndex]
+    this.element.classList.add('state-change')
+
+    requestAnimationFrame(() => {
+      this.element.classList.remove('state-change')
+    })
+  }
+}
+```
+
+配套的 CSS 样式：
+```css
+.state-change {
+  transition: all 0.3s ease;
+  opacity: 0.8;
+}
+```
+
+### 4. DOM 更新优化策略
+
+#### a) 批量更新 DOM
+```javascript
+function batchUpdate() {
+  const fragment = document.createDocumentFragment()
+
+  Promise.resolve().then(() => {
+    // 批量操作
+    for (let i = 0; i < 100; i++) {
+      const div = document.createElement('div')
+      fragment.appendChild(div)
+    }
+    // 一次性更新 DOM
+    document.body.appendChild(fragment)
+  })
+}
+```
+
+#### b) 使用 requestAnimationFrame
+```javascript
+function smoothUpdate() {
+  // 第一步更新
+  element.textContent = '加载中...'
+
+  requestAnimationFrame(() => {
+    // 确保第一步更新可见
+    element.textContent = '处理中...'
+
+    requestAnimationFrame(() => {
+      // 最终更新
+      element.textContent = '完成！'
+    })
+  })
+}
+```
+
+#### c) CSS 类替代直接样式操作
+```javascript
+// 👎 不推荐
+element.style.opacity = '0'
+element.style.transform = 'translateX(100px)'
+
+// 👍 推荐
+element.classList.add('hide-element')
+```
+
+### 5. 注意事项
+- 微任务总是在当前事件循环的 DOM 渲染之前执行
+- 如果需要看到 DOM 更新的中间状态，使用 `requestAnimationFrame`
+- 批量处理 DOM 更新可以提高性能
+- 优先使用 CSS 类而不是直接操作样式
+- 避免在微任务中进行大量 DOM 操作，可能阻塞渲染
+
+## 五、性能优化策略
 
 ### 1. 避免阻塞主线程
 
@@ -197,7 +325,7 @@ async function processItems(items) {
 }
 ```
 
-## 五、常见陷阱与解决方案
+## 六、常见陷阱与解决方案
 
 ### 1. 定时器延迟不准确
 
@@ -258,7 +386,7 @@ function processData() {
 }
 ```
 
-## 六、实战应用与面试题
+## 七、实战应用与面试题
 
 ### 1. 实际工作场景案例
 
@@ -357,7 +485,7 @@ console.log('5')
 // 输出: 4 -> 1 -> 5 -> 2 -> 3
 ```
 
-## 七、性能优化最佳实践
+## 八、性能优化最佳实践
 
 ### 1. 任务分割与优先级控制
 ```javascript
@@ -380,24 +508,55 @@ function chunkedTask(items, process) {
 
 ### 2. 合理使用 requestAnimationFrame
 ```javascript
-function smoothAnimation() {
+// 实现一个元素从左到右移动的平滑动画
+function smoothMoveElement(element, distance) {
   let start = null
-  const duration = 1000
+  const duration = 1000 // 动画持续1秒
 
   function animate(timestamp) {
+    // 首次运行时初始化开始时间
     if (!start)
       start = timestamp
-    const progress = timestamp - start
 
-    // 执行动画
-    updateAnimation(progress / duration)
+    // 计算动画进度（0 到 1 之间）
+    const progress = Math.min((timestamp - start) / duration, 1)
 
-    if (progress < duration)
+    // 使用缓动函数使动画更自然
+    const easeProgress = easeInOutCubic(progress)
+
+    // 更新元素位置
+    const currentPosition = distance * easeProgress
+    element.style.transform = `translateX(${currentPosition}px)`
+
+    // 如果动画未完成，继续下一帧
+    if (progress < 1)
       requestAnimationFrame(animate)
   }
 
+  // 缓动函数让动画更平滑
+  function easeInOutCubic(t) {
+    return t < 0.5
+      ? 4 * t * t * t
+      : 1 - (-2 * t + 2) ** 3 / 2
+  }
+
+  // 开始动画
   requestAnimationFrame(animate)
 }
+
+// 使用示例
+const box = document.querySelector('.box')
+smoothMoveElement(box, 300) // 元素向右移动300px
+
+/**
+ css
+.box {
+  width: 100px;
+  height: 100px;
+  background: #3498db;
+  position: relative;
+}
+ */
 ```
 
 > 🎯 面试重点总结：

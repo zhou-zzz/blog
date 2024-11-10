@@ -71,9 +71,37 @@ bar() // 输出: "全局"
 for (var i = 0; i < 3; i++)
   setTimeout(() => console.log(i), 1000) // 输出：3, 3, 3
 
+/**
+var i;  // i 被提升到当前函数作用域顶部
+{
+    i = 0; // var i = 0;
+    while (i < 3) {
+        console.log(i);
+        i++;
+    }
+}
+console.log(i); // 3 (循环结束后 i 仍然可访问)
+ */
+
 // 👍 推荐的做法
 for (let i = 0; i < 3; i++)
   setTimeout(() => console.log(i), 1000) // 输出：0, 1, 2
+
+/**
+let 的情况相当于：
+{
+    let i = 0;
+    setTimeout(() => console.log(i), 0);
+}
+{
+    let i = 1;
+    setTimeout(() => console.log(i), 0);
+}
+{
+    let i = 2;
+    setTimeout(() => console.log(i), 0);
+}
+ */
 ```
 
 ### 4. var/let/const 的区别
@@ -125,7 +153,44 @@ a = 1 // 这里才是赋值操作
 
 ## 二、闭包：强大而优雅的编程模式
 
-### 1. 闭包的实际应用场景
+### 1. 闭包的原理与形成过程
+
+闭包（Closure）是 JavaScript 中最重要的概念之一，它指的是一个函数能够访问其词法作用域之外的变量的特性。
+
+#### a) 形成原理
+1. 函数在创建时会保存其词法作用域（Lexical Scope）
+2. 当函数在其词法作用域之外执行时，仍然可以访问其词法作用域中的变量
+3. 闭包通过函数对象的 `[[Environment]]` 属性保存对外部词法环境的引用
+
+#### b) 基本示例
+```javascript
+function createCounter() {
+  let count = 0 // 私有变量
+
+  return {
+    increment() {
+      count++ // 访问词法作用域中的变量
+      return count
+    },
+    getCount() {
+      return count
+    }
+  }
+}
+
+const counter = createCounter()
+console.log(counter.getCount()) // 0
+console.log(counter.increment()) // 1
+console.log(counter.increment()) // 2
+```
+
+#### c) 闭包形成的过程
+1. `createCounter` 函数执行时创建新的词法环境，包含 `count` 变量
+2. 返回的对象中的方法保持对该词法环境的引用
+3. 即使 `createCounter` 执行完毕，其内部的 `count` 变量仍然存在
+4. 通过返回的方法可以访问和修改 `count` 变量
+
+### 2. 闭包的实际应用场景
 
 #### a) 数据私有化
 ```javascript
@@ -163,7 +228,7 @@ console.log(multiplyByTwo(5)) // 10
 console.log(multiplyByTen(5)) // 50
 ```
 
-### 2. 闭包的优势
+### 3. 闭包的优势
 
 1. **数据私有化**
    - 外部无法直接访问 `count` 变量
@@ -177,7 +242,7 @@ console.log(multiplyByTen(5)) // 50
    - 可以创建独立的功能单元
    - 避免全局变量的污染
 
-### 3. 闭包的内存管理最佳实践
+### 4. 闭包的内存管理最佳实践
 
 ```javascript
 // 👍 推荐的清理模式
@@ -202,21 +267,171 @@ cleanup()
 
 ## 三、实践建议与注意事项
 
-1. **合理使用闭包**
-   - 只在确实需要的地方使用闭包
-   - 注意内存占用，及时清理不需要的引用
+### 1. 合理使用闭包的最佳实践
 
-2. **作用域最佳实践**
-   - 优先使用 const，其次是 let
-   - 避免使用 var
-   - 善用块级作用域隔离变量
+#### a) 避免过度使用闭包
+```javascript
+// 👎 不推荐：每个元素都创建一个新的闭包
+function createButtons() {
+  const buttons = []
+  for (let i = 0; i < 1000; i++) {
+    const button = document.createElement('button')
+    button.onclick = function () {
+      console.log(`Button ${i} clicked`)
+    }
+    buttons.push(button)
+  }
+  return buttons
+}
 
-3. **性能优化**
-   - 避免在循环中创建闭包
-   - 注意闭包中的变量引用
-   - 合理使用垃圾回收机制
+// 👍 推荐：使用事件委托，只创建一个闭包
+function createButtons() {
+  const container = document.createElement('div')
+  const buttons = []
 
-## 五、面试重点与实战
+  // 事件委托，只需要一个事件处理器
+  container.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+      const index = e.target.dataset.index
+      console.log(`Button ${index} clicked`)
+    }
+  })
+
+  for (let i = 0; i < 1000; i++) {
+    const button = document.createElement('button')
+    button.dataset.index = i
+    buttons.push(button)
+  }
+
+  buttons.forEach(btn => container.appendChild(btn))
+  return container
+}
+```
+
+#### b) 内存管理示例
+```javascript
+// 👎 不推荐：容易造成内存泄漏
+class ResourceManager {
+  constructor() {
+    this.resources = new Map()
+  }
+
+  loadResource(id) {
+    const resource = { data: Array.from({ length: 10000 }).fill('大量数据') }
+    this.resources.set(id, resource)
+
+    // 这里的闭包会一直持有 resource 的引用
+    return function () {
+      return resource.data
+    }
+  }
+  // 没有提供清理方法
+}
+
+// 👍 推荐：提供清理机制
+class ResourceManager {
+  constructor() {
+    this.resources = new Map()
+  }
+
+  loadResource(id) {
+    const resource = { data: Array.from({ length: 10000 }).fill('大量数据') }
+    this.resources.set(id, resource)
+
+    return {
+      getData: () => resource.data,
+      cleanup: () => {
+        // 清理资源
+        this.resources.delete(id)
+        resource.data = null
+      }
+    }
+  }
+}
+```
+
+#### c) 作用域链优化
+```javascript
+// 👎 不推荐：作用域链过长，性能较差
+const globalData = { /* 大量数据 */ }
+
+function outer() {
+  const outerData = { /* 更多数据 */ }
+
+  function middle() {
+    const middleData = { /* 更多数据 */ }
+
+    function inner() {
+      // 这里的闭包需要维护整个作用域链
+      return globalData.value + outerData.value + middleData.value
+    }
+
+    return inner
+  }
+
+  return middle()
+}
+
+// 👍 推荐：只保留需要的数据
+function createProcessor(globalData) {
+  // 立即计算需要的值
+  const necessaryValue = globalData.value
+
+  return function process(input) {
+    // 闭包只需要维护 necessaryValue
+    return input + necessaryValue
+  }
+}
+```
+
+#### d) 使用 WeakMap 优化垃圾回收
+```javascript
+// 👍 推荐：使用 WeakMap 来存储相关数据
+class DOMManager {
+  constructor() {
+    // WeakMap 允许键值对在不再使用时被垃圾回收
+    this.elementData = new WeakMap()
+  }
+
+  attachData(element, data) {
+    this.elementData.set(element, data)
+  }
+
+  removeElement(element) {
+    // 当 element 被删除时，WeakMap 中对应的数据会自动被垃圾回收
+    element.remove()
+  }
+}
+
+// 使用示例
+const manager = new DOMManager()
+const div = document.createElement('div')
+manager.attachData(div, { someData: '大量数据' })
+
+// 当不再需要时
+manager.removeElement(div)
+// div 和相关数据会被自动垃圾回收
+```
+
+### 2. 性能优化关键点
+
+1. **避免过度使用闭包**
+   - 使用事件委托代替多个事件监听器
+   - 只在必要时创建闭包
+
+2. **及时清理资源**
+   - 提供 cleanup 方法
+   - 使用 WeakMap/WeakSet 存储关联数据
+
+3. **优化作用域链**
+   - 减少闭包中的变量引用
+   - 只保留必要的数据
+
+4. **合理使用垃圾回收**
+   - 使用 WeakMap/WeakSet 存储对象引用
+   - 及时解除不需要的引用
+
+## 四、面试重点与实战
 
 ### 1. 经典面试题解析
 
@@ -277,7 +492,17 @@ console.log(counter.count) // undefined
 ```javascript
 class EventManager {
   constructor() {
+    // 使用 Map 创建三层数据结构：
+    // Map(element => Map(eventType => Set(handlers)))
     this.handlers = new Map()
+    /**
+     Map (handlers)
+    ├── element1 => Map
+    │   ├── 'click' => Set[handler1, handler2]
+    │   └── 'mouseover' => Set[handler3]
+    └── element2 => Map
+        └── 'click' => Set[handler4]
+     */
   }
 
   addHandler(element, type, handler) {
@@ -355,7 +580,7 @@ function fastLoop() {
     log(globalVar)
 }
 ```
-## 六、编码规范建议
+## 五、编码规范建议
 
 1. 闭包命名规范
    - 使用动词+名词的形式

@@ -182,54 +182,6 @@ class App {
 
 ## 四、常见陷阱与解决方案
 
-### 1、���调函数中的 this 丢失
-
-```javascript
-class DataService {
-  constructor() {
-    this.data = []
-  }
-
-  // ❌ 错误方式
-  fetchData() {
-    fetch('/api/data')
-      .then(function (response) {
-        this.data = response // this undefined
-      })
-  }
-
-  // ✅ 正确方式
-  fetchData() {
-    fetch('/api/data')
-      .then((response) => {
-        this.data = response // this 正确
-      })
-  }
-}
-```
-
-### 2、方法作为回调传递
-
-```javascript
-class Handler {
-  constructor() {
-    this.name = '处理器'
-  }
-
-  // ❌ 可能出问题的方式
-  handleClick() {
-    console.log(this.name)
-  }
-
-  // ✅ 推荐方式
-  handleClick = () => {
-    console.log(this.name)
-  }
-}
-```
-
-## 五、常见陷阱与解决方案
-
 ### 1、回调函数中的 this 丢失
 
 ```javascript
@@ -276,7 +228,7 @@ class Handler {
 }
 ```
 
-## 六、面试重点与实战
+## 五、面试重点与实战
 
 ### 1. 经典面试题解析
 
@@ -367,6 +319,17 @@ class Button extends React.Component {
   }
 }
 ```
+```
+函数创建时机
+不好的写法：每次渲染都要创建新函数
+好的写法：只在组件实例化时创建一次
+内存分配
+不好的写法：反复分配和释放内存
+好的写法：只分配一次内存
+React 的比较机制
+不好的写法：每次都是新函数，总是触发更新
+好的写法：始终是同一个函数引用，避免不必要的更新
+```
 
 #### b) 事件代理系统
 ```javascript
@@ -437,22 +400,7 @@ class GoodExample {
 }
 ```
 
-2. **合理使用 bind**
-```javascript
-// 👎 不推荐
-function repeatBind() {
-  const handler = function () {}
-  // 每次调用都创建新函数
-}
-
-// 👍 推荐
-function singleBind() {
-  // 一次绑定，多次使用
-  this.handler = this.handler.bind(this)
-}
-```
-
-## 七、编码规范建议
+## 六、编码规范建议
 
 1. this 绑定规范
    - 优先使用箭头函数

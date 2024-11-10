@@ -175,7 +175,7 @@ function myNew(fn, ...args) {
   // 2.将构造函数中的this指向obj,并执行构造函数
   const result = fn.apply(obj, args)
   // 3.如果构造函数返回的是对象,则返回构造函数返回的对象,否则返回obj
-  return result
+  return result instanceof Object ? result : obj
 }
 ```
 
@@ -192,6 +192,7 @@ const person = new Person()
 console.log(person.__proto__ === Person.prototype)
 console.log(Person.prototype.__proto__ === Object.prototype)
 console.log(Person.__proto__ === Function.prototype)
+console.log(Function.__proto__ === Function.prototype)
 ```
 
 > 🎯 考点分析：
@@ -205,7 +206,7 @@ console.log(Person.__proto__ === Function.prototype)
   1. 实例的 `__proto__` 指向构造函数的 `prototype`
   2. `Person.prototype` 是普通对象，其 `__proto__` 指向 `Object.prototype`
   3. `Person` 作为函数对象，其 `__proto__` 指向 `Function.prototype`
-
+  4. `Function` 作为函数对象，其 `__proto__` 指向 `Function.prototype`（Function 这个内置构造函数比较特殊，它是一个函数对象，但同时也是创建所有函数的构造函数）
 #### 题目2：继承实现
 ```javascript
 // 实现一个完美的继承
