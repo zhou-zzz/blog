@@ -75,7 +75,6 @@ await fetchPage()
         <TableOfContents
           v-if="headers && headers.length > 0"
           :headers="headers"
-          class="hidden lg:block"
         />
       </div>
     </template>

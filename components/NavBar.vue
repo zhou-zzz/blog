@@ -64,13 +64,15 @@ function toggleDark(event: MouseEvent) {
   <header class="p8 text-gray-700">
     <NuxtLink to="/" class="w-6 h-6 absolute lg:fixed select-none outline-none op70 hover:op100  dark:color-white">
       <img src="/logo.png" alt="">
-      <!-- <img v-show="color.value === 'dark'" src="/logo.png" alt="logo">
-      <img v-show="color.value !== 'dark'" src="/logo.png" alt="logo"> -->
     </NuxtLink>
     <nav class="flex justify-end items-center gap6">
       <NuxtLink to="/posts" title="Blog" class="op70 hover:op100  dark:color-white">
         <span class="lt-sm:hidden">Blog</span>
         <div i-ri-article-line sm:hidden />
+      </NuxtLink>
+      <NuxtLink to="/notes" title="Notes" class="op70 hover:op100  dark:color-white">
+        <span class="lt-sm:hidden">Notes</span>
+        <div i-ri-book-line sm:hidden />
       </NuxtLink>
       <NuxtLink to="/projects" title="Projects" class="op70 hover:op100 dark:color-white">
         <span class="lt-sm:hidden">Projects</span>
@@ -83,3 +85,10 @@ function toggleDark(event: MouseEvent) {
     </nav>
   </header>
 </template>
+
+<style>
+.nav-container {
+  padding: 2rem;
+}
+
+</style>

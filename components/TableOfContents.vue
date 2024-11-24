@@ -101,7 +101,7 @@ function getIndentStyle(depth: number) {
 
 <template>
   <ClientOnly>
-    <nav class="toc fixed left-8 top-24 w-56">
+    <nav class="toc fixed left-8 top-24 w-56 hidden lg:block">
       <div class="text-sm p-3 transition-colors duration-200">
         <div class="font-bold mb-2 text-gray-900 dark:text-white">
           目录
