@@ -13,6 +13,7 @@ const postsGroupedByYear = computed(() => groupBy<Post>(getYear, currentPagePost
 </script>
 
 <template>
+  <Plum />
   <main class="m-auto max-w-prose px-7 py-10 slide-enter-content animate-delay-200">
     <ul>
       <template v-if="!postsGroupedByYear.size">

@@ -7,7 +7,7 @@ description: 在线预览pdf
 
 在开发过程中，我们经常会遇到需要在网页上预览 PDF 文件的需求。本文将总结几种常用的前端 PDF 预览方法，帮助开发者在不同场景下选择合适的技术方案。
 
-## 1. 使用 HTML 标签
+## 一. 使用 HTML 标签
 
 ### 1.1 使用 `<embed>` 标签
 
@@ -49,7 +49,7 @@ description: 在线预览pdf
 </object>
 ```
 
-## 2. 使用第三方库
+## 二. 使用第三方库
 
 ### 2.1 PDF.js
 
@@ -62,7 +62,7 @@ const pdfUrl = `static/pdf/web/viewer.html?file=${url}`
 
 将生成的 `pdfUrl` 传递给 `<iframe>` 即可实现预览。
 
-## 3. 总结
+## 三. 总结
 
 - HTML 标签（`<embed>`、`<iframe>`、`<object>`）适合简单的 PDF 预览需求，易于实现，但功能和样式有限。
 - PDF.js 适合需要自定义界面和功能的场景，尤其是在移动端需要更好兼容性时，但实现较为复杂。
