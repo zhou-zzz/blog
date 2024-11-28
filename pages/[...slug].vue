@@ -88,30 +88,4 @@ await fetchPage()
     margin-right: 16rem;
   }
 }
-
-/* :root {
-  --dot-color: rgba(0, 0, 0, 0.08);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --dot-color: rgba(255, 255, 255, 0.158);
-  }
-} */
-
-/* body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background-image:
-    radial-gradient(var(--dot-color) 1px, transparent 1px),
-    radial-gradient(var(--dot-color) 1px, transparent 1px);
-  background-size: 30px 30px;
-  background-position: 0 0, 15px 15px;
-  pointer-events: none;
-} */
 </style>
