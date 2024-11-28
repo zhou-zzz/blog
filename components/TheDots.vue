@@ -4,8 +4,7 @@ import type { P5I } from 'p5i'
 import { onMounted, onUnmounted, ref } from 'vue'
 
 const el = ref<HTMLCanvasElement | null>(null)
-const isDark = useDark()
-
+const color = useColorMode()
 const {
   mount,
   unmount,
@@ -21,44 +20,50 @@ const {
   TWO_PI,
 } = p5i()
 
-// 配置参数
 const CONFIG = {
-  SCALE: 200, // 噪声缩放
-  LENGTH: 8, // 点移动长度
-  SPACING: 20, // 点间距
-  POINT_SIZE: 1.5, // 点大小
-  OPACITY: 0.6, // 基础透明度
-  SPEED: 0.0001, // 动画速度
+  SCALE: 150,
+  LENGTH: 6,
+  SPACING: 25,
+  POINT_SIZE: 1,
+  OPACITY: 0.4,
+  SPEED: 0.00008,
+  FADE_SPEED: 0.05,
 }
 
-// 颜色主题
 const THEME = {
   light: {
     background: '#ffffff',
-    particle: '#8888ff',
+    particle: 'rgba(0, 0, 0, 0.06)',
   },
   dark: {
     background: '#111111',
-    particle: '#ffffff',
+    particle: 'rgba(255, 255, 255, 0.08)',
   },
 }
 
 let w = window.innerWidth
 let h = window.innerHeight
-const points: { x: number, y: number, opacity: number }[] = []
+
+interface Point {
+  x: number
+  y: number
+  opacity: number
+  size: number
+  speed: number
+}
+
+const points: Point[] = []
 const existingPoints = new Set<string>()
 
-// 使用柏林噪声计算力场
 function getForceVector(x: number, y: number, t: number) {
   const angle = (noise(x / CONFIG.SCALE, y / CONFIG.SCALE, t) - 0.5) * 2 * TWO_PI
-  const strength = noise(x / CONFIG.SCALE, y / CONFIG.SCALE, t * 2) + 0.5
+  const strength = (noise(x / CONFIG.SCALE, y / CONFIG.SCALE, t * 1.5) + 0.2) * CONFIG.LENGTH
   return {
     angle,
-    strength: strength * CONFIG.LENGTH,
+    strength: strength * Math.sin(t * 2), // 添加正弦波动
   }
 }
 
-// 添加新的点
 function addPoints() {
   for (let x = 0; x < w + CONFIG.SPACING; x += CONFIG.SPACING) {
     for (let y = 0; y < h + CONFIG.SPACING; y += CONFIG.SPACING) {
@@ -69,7 +74,9 @@ function addPoints() {
       points.push({
         x,
         y,
-        opacity: Math.random() * 0.5 + CONFIG.OPACITY,
+        opacity: Math.random() * 0.3 + CONFIG.OPACITY,
+        size: Math.random() * 0.5 + CONFIG.POINT_SIZE,
+        speed: Math.random() * 0.5 + 0.5, // 每个点有自己的速度
       })
     }
   }
@@ -83,21 +90,24 @@ function setup() {
 }
 
 function draw({ circle }: P5I) {
-  const theme = isDark.value ? THEME.dark : THEME.light
+  const theme = color.value === 'dark' ? THEME.dark : THEME.light
   background(theme.background)
 
   const t = Date.now() * CONFIG.SPEED
 
   for (const p of points) {
-    const { angle, strength } = getForceVector(p.x, p.y, t)
+    const { angle, strength } = getForceVector(p.x, p.y, t * p.speed)
     const nx = p.x + cos(angle) * strength
     const ny = p.y + sin(angle) * strength
 
-    // 计算动态透明度
-    const opacity = (Math.abs(cos(angle)) * 0.5 + 0.5) * p.opacity * 255
+    // 根据移动距离动态调整透明度
+    const distance = Math.sqrt(
+      Math.pow(nx - p.x, 2) + Math.pow(ny - p.y, 2),
+    )
+    const dynamicOpacity = p.opacity * (1 - distance / (CONFIG.LENGTH * 2))
 
-    stroke(theme.particle)
-    circle(nx, ny, CONFIG.POINT_SIZE)
+    stroke(`rgba(${color.value === 'dark' ? '255,255,255' : '0,0,0'},${dynamicOpacity})`)
+    circle(nx, ny, p.size)
   }
 }
 
@@ -129,7 +139,7 @@ onUnmounted(() => {
 })
 
 // 监听主题变化
-watch(isDark, () => {
+watch(color, () => {
   restart()
 })
 </script>
@@ -137,6 +147,6 @@ watch(isDark, () => {
 <template>
   <div
     ref="el"
-    class="fixed inset-0 pointer-events-none -z-1 transition-colors duration-300"
+    class="fixed inset-0 pointer-events-none z-[-2] transition-opacity duration-1000"
   />
 </template>

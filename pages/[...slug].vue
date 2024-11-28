@@ -67,6 +67,7 @@ await fetchPage()
 
     <template v-else>
       <div class="relative">
+        <TheDots />
         <Plum v-if="page.plum" />
         <article class="m-auto max-w-prose px-7 py-10 slide-enter-content animate-delay-200">
           <ContentRenderer :value="page" />
@@ -88,7 +89,7 @@ await fetchPage()
   }
 }
 
-:root {
+/* :root {
   --dot-color: rgba(0, 0, 0, 0.08);
 }
 
@@ -96,9 +97,9 @@ await fetchPage()
   :root {
     --dot-color: rgba(255, 255, 255, 0.158);
   }
-}
+} */
 
-body::before {
+/* body::before {
   content: "";
   position: fixed;
   top: 0;
@@ -112,5 +113,5 @@ body::before {
   background-size: 30px 30px;
   background-position: 0 0, 15px 15px;
   pointer-events: none;
-}
+} */
 </style>

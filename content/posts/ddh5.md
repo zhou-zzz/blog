@@ -75,3 +75,7 @@ if (import.meta.env.MODE === 'development') {
   new VConsole()
 }
 ```
+
+## 六. 总结
+- 浙政钉安卓的浏览器版本比较低，需要降级处理
+- 1px线条粗可以使用伪元素➕transform: scaleY(0.5) 处理
