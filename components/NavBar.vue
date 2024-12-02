@@ -74,6 +74,10 @@ function toggleDark(event: MouseEvent) {
         <span class="lt-sm:hidden">Notes</span>
         <div i-ri-book-line sm:hidden />
       </NuxtLink>
+      <NuxtLink to="/life" title="Life" class="op70 hover:op100 dark:color-white">
+        <span class="lt-sm:hidden">Life</span>
+        <div i-ri-camera-line sm:hidden />
+      </NuxtLink>
       <NuxtLink to="/projects" title="Projects" class="op70 hover:op100 dark:color-white">
         <span class="lt-sm:hidden">Projects</span>
         <div i-ri-lightbulb-line class="sm:hidden" />
