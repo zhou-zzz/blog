@@ -1,24 +1,10 @@
-<script setup>
-defineProps({
-  src: {
-    type: String,
-    default: '',
-  },
-  alt: {
-    type: String,
-    default: '',
-  },
-  width: {
-    type: [String, Number],
-    default: undefined,
-  },
-  height: {
-    type: [String, Number],
-    default: undefined,
-  },
-})
+<script setup lang="ts">
+const props = defineProps<{
+  src: string
+  alt?: string
+}>()
 </script>
 
 <template>
-  <img :src="src" :alt="alt" :width="width" :height="height">
+  <ContentImage :src="props.src" :alt="props.alt" />
 </template>
