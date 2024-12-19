@@ -1,6 +1,4 @@
 <script setup lang="ts">
-const isBackToTop = ref(false)
-
 // 使用 useScroll 来监听滚动
 const { y } = useScroll(window)
 
