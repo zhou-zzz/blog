@@ -1,5 +1,5 @@
 ---
-title: 如何封一个好用装组件
+title: 如何封装一个好用装组件
 date: 2024-11-27
 tag: ['Vue']
 description: 如何封装一个好用的组件
@@ -23,13 +23,13 @@ description: 如何封装一个好用的组件
 
 ### 1. 命名
 如何命名是有考究的，简单来说命名通常为大家常见、熟悉易懂的名称。我司该项目是移动端的项目，且使用了vnat-ui组件库，因此在命名上我参照了该组件的规范，减少其他同事的使用心智负担
-文件命名：department-user-picker.vue
-组件的props：
-options：可选项数据源
-field-names：自定义 options 结构中的字段
-组件的emit：
-cancel：取消选择
-confirm：确定选择
+- 文件命名：department-user-picker.vue
+- 组件的props：
+  - options：可选项数据源
+  - field-names：自定义 options 结构中的字段
+- 组件的emit：
+  - cancel：取消选择
+  - confirm：确定选择
 
 ### 2. 确定数据结构
 ```ts
