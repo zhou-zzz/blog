@@ -102,7 +102,7 @@ function draw({ circle }: P5I) {
 
     // 根据移动距离动态调整透明度
     const distance = Math.sqrt(
-      Math.pow(nx - p.x, 2) + Math.pow(ny - p.y, 2),
+      (nx - p.x) ** 2 + (ny - p.y) ** 2,
     )
     const dynamicOpacity = p.opacity * (1 - distance / (CONFIG.LENGTH * 2))
 

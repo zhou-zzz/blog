@@ -30,7 +30,6 @@ function toggleDark(event: MouseEvent) {
     Math.max(y, innerHeight - y),
   )
 
-  // @ts-expect-error: Transition API
   const transition = document.startViewTransition(async () => {
     color.preference = color.value === 'dark' ? 'light' : 'dark'
     await nextTick()
@@ -94,5 +93,4 @@ function toggleDark(event: MouseEvent) {
 .nav-container {
   padding: 2rem;
 }
-
 </style>
