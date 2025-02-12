@@ -67,7 +67,6 @@ await fetchPage()
 
     <template v-else>
       <div class="relative">
-        <TheDots />
         <Plum v-if="page.plum" />
         <article class="m-auto max-w-prose px-7 py-10 slide-enter-content animate-delay-200">
           <ContentRenderer :value="page" />
