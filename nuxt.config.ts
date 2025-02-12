@@ -5,6 +5,7 @@ export default defineNuxtConfig({
   extends: [process.env.THEME_ELEMENTS || '@nuxt-themes/elements', process.env.THEME_TYPOGRAPHY || '@nuxt-themes/typography'],
   modules: ['@vueuse/nuxt', '@unocss/nuxt', '@nuxt/content', '@nuxtjs/color-mode'],
   css: ['@unocss/reset/tailwind.css', '~/assets/css/global.css'],
+
   content: {
     highlight: {
       preload: ['javascript', 'typescript', 'vue', 'vue-html'],
@@ -18,9 +19,11 @@ export default defineNuxtConfig({
       },
     },
   },
+
   colorMode: {
     classSuffix: '',
   },
+
   app: {
     head: {
       viewport: 'width=device-width,initial-scale=1',
@@ -34,5 +37,4 @@ export default defineNuxtConfig({
       ],
     },
   },
-
 })
