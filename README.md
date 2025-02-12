@@ -1,42 +1,35 @@
-# Nuxt 3 Minimal Starter
+# Personal Blog
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+基于 Nuxt 3 构建的个人博客系统。
 
-## Setup
+## 技术栈
 
-Make sure to install the dependencies:
+- [Nuxt 3](https://nuxt.com/) - Vue.js 框架
+- [Nuxt Content](https://content.nuxt.com/) - 内容管理
+- [UnoCSS](https://unocss.dev/) - 原子化 CSS 引擎
+- [VueUse](https://vueuse.org/) - Vue Composition API 工具集
+- [TypeScript](https://www.typescriptlang.org/) - JavaScript 类型系统
+
+## 特性
+
+- 📝 基于 Markdown 的内容创作
+- 🎨 暗黑模式支持
+- 📱 响应式设计
+- 🔍 文章目录导航
+- ⚡️ 快速加载体验
+- 🖼️ 图片缩放预览
+
+## 开发
 
 ```bash
-# yarn
-yarn install
-
-# npm
-npm install
-
-# pnpm
+# 安装依赖
 pnpm install
-```
 
-## Development Server
+# 启动开发服务器
+pnpm dev
 
-Start the development server on `http://localhost:3000`
+# 代码格式检查
+pnpm lint
 
-```bash
-npm run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-npm run build
-```
-
-Locally preview production build:
-
-```bash
-npm run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+# 代码格式修复
+pnpm lint:fix
