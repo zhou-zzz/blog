@@ -119,4 +119,3 @@ async uploadFile(@UploadedFiles() files: Array<Express.Multer.File>, @Body() bod
   - fs.rmSync 删除文件
   - fs.readdirSync 读取目录
   - fs.rm 删除目录
-
