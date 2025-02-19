@@ -45,6 +45,9 @@ await fetchPage()
 
 <template>
   <ClientOnly>
+    <!-- 添加点阵背景层 -->
+    <div v-if="page.bg" class="fixed inset-0 bg-dots -z-10" />
+
     <template v-if="!page">
       <div class="flex justify-center items-center min-h-screen">
         <div class="animate-pulse">
@@ -82,9 +85,21 @@ await fetchPage()
 </template>
 
 <style>
+/* 现有样式保持不变 */
 @media (min-width: 1024px) {
   article {
     margin-right: 16rem;
   }
+}
+
+/* 添加点阵背景样式 */
+.bg-dots {
+  background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+}
+
+:root.dark .bg-dots {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
 }
 </style>

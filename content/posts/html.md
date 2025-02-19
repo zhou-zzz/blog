@@ -3,6 +3,7 @@ title: HTML面试复习
 date: 2025-02-17
 tag: ['html', 'interview']
 description: HTML核心知识点与面试要点总结
+bg: true
 ---
 
 ## HTML 基础知识
@@ -97,99 +98,7 @@ description: HTML核心知识点与面试要点总结
   - pattern
   - autocomplete
 
-### 5. 重要面试题
-
-#### 1. 浏览器渲染过程
-```
-1. 解析 HTML 生成 DOM 树
-   - 解析 HTML 标记为 DOM 节点
-   - 构建 DOM 树形结构
-   - 遇到 script 标签会阻塞解析
-
-2. 解析 CSS 生成 CSSOM 树
-   - 解析 CSS 文件和 style 标签
-   - 计算每个节点的样式
-   - 构建 CSSOM 树
-
-3. 合并 DOM 和 CSSOM 生成渲染树（Render Tree）
-   - 过滤不可见的节点（如 display: none）
-   - 计算节点的样式
-   - 确定节点在视口中的位置
-
-4. 布局计算（Layout/Reflow）
-   - 计算每个节点的几何信息
-   - 确定元素的大小和位置
-   - 处理盒模型相关的计算
-
-5. 绘制页面（Paint）
-   - 将渲染树转换为屏幕上的像素
-   - 绘制文本、颜色、边框、阴影等
-   - 按照图层合成最终画面
-
-6. 渲染优化策略
-   - 避免频繁的样式变更
-   - 使用 transform 和 opacity 做动画
-   - 避免强制同步布局
-   - 使用 document fragment 批量操作 DOM
-   - 使用 requestAnimationFrame 做动画
-
-7. 关键渲染路径优化
-   - CSS 文件放在 head 中
-   - JavaScript 放在 body 底部
-   - 使用 async/defer 加载脚本
-   - 减少关键资源的数量和大小
-```
-
-#### 2. 重排（回流）和重绘
-```
-1. 触发重排的操作
-   - 改变元素的大小、位置
-   - 改变浏览器窗口大小
-   - 添加/删除可见的 DOM 元素
-   - 获取某些属性（offsetTop、scrollTop、clientWidth 等）
-
-2. 触发重绘的操作
-   - 改变元素的颜色
-   - 改变元素的背景色
-   - 改变元素的透明度
-   - visibility 的变化
-```
-#### 3. 跨域解决方案
-- CORS
-- JSONP
-- 代理服务器
-- postMessage
-
-```
-- CORS
-- 优点：标准化方案，支持所有请求方式
-- 缺点：需要服务器配合，老浏览器兼容性问题
-
-- JSONP
-- 优点：兼容性好，实现简单
-- 缺点：只支持 GET 请求，有安全风险
-
-- 代理服务器
-- 优点：适用所有场景，不受浏览器限制
-- 缺点：需要额外服务器资源
-
-- postMessage
-- 优点：适合跨窗口通信
-- 缺点：使用场景有限，需要双方页面配合
-```
-#### 4. 存储方案
-- localStorage
-- sessionStorage
-- Cookie
-- IndexedDB
-
-```
-- localStorage: 持久化存储用户设置、主题等
-- sessionStorage: 表单数据临时保存、页面间数据传递
-- Cookie: 用户认证、追踪
-- IndexedDB: 离线应用、大文件存储
-```
-### 6. 性能优化
+### 5. 性能优化
 
 #### 加载优化
 - 资源压缩
@@ -349,4 +258,97 @@ el.style.transform = 'translate(10px, 20px)'
 - 页面滚动更流畅
 - 动画性能提升
 - CPU使用率降低
+```
+
+### 6. 重要面试题
+
+#### 1. 浏览器渲染过程
+```
+1. 解析 HTML 生成 DOM 树
+   - 解析 HTML 标记为 DOM 节点
+   - 构建 DOM 树形结构
+   - 遇到 script 标签会阻塞解析
+
+2. 解析 CSS 生成 CSSOM 树
+   - 解析 CSS 文件和 style 标签
+   - 计算每个节点的样式
+   - 构建 CSSOM 树
+
+3. 合并 DOM 和 CSSOM 生成渲染树（Render Tree）
+   - 过滤不可见的节点（如 display: none）
+   - 计算节点的样式
+   - 确定节点在视口中的位置
+
+4. 布局计算（Layout/Reflow）
+   - 计算每个节点的几何信息
+   - 确定元素的大小和位置
+   - 处理盒模型相关的计算
+
+5. 绘制页面（Paint）
+   - 将渲染树转换为屏幕上的像素
+   - 绘制文本、颜色、边框、阴影等
+   - 按照图层合成最终画面
+
+6. 渲染优化策略
+   - 避免频繁的样式变更
+   - 使用 transform 和 opacity 做动画
+   - 避免强制同步布局
+   - 使用 document fragment 批量操作 DOM
+   - 使用 requestAnimationFrame 做动画
+
+7. 关键渲染路径优化
+   - CSS 文件放在 head 中
+   - JavaScript 放在 body 底部
+   - 使用 async/defer 加载脚本
+   - 减少关键资源的数量和大小
+```
+
+#### 2. 重排（回流）和重绘
+```
+1. 触发重排的操作
+   - 改变元素的大小、位置
+   - 改变浏览器窗口大小
+   - 添加/删除可见的 DOM 元素
+   - 获取某些属性（offsetTop、scrollTop、clientWidth 等）
+
+2. 触发重绘的操作
+   - 改变元素的颜色
+   - 改变元素的背景色
+   - 改变元素的透明度
+   - visibility 的变化
+```
+#### 3. 跨域解决方案
+- CORS
+- JSONP
+- 代理服务器
+- postMessage
+
+```
+- CORS
+- 优点：标准化方案，支持所有请求方式
+- 缺点：需要服务器配合，老浏览器兼容性问题
+
+- JSONP
+- 优点：兼容性好，实现简单
+- 缺点：只支持 GET 请求，有安全风险
+
+- 代理服务器
+- 优点：适用所有场景，不受浏览器限制
+- 缺点：需要额外服务器资源
+
+- postMessage
+- 优点：适合跨窗口通信
+- 缺点：使用场景有限，需要双方页面配合
+```
+#### 4. 存储方案
+- localStorage
+- sessionStorage
+- Cookie
+- IndexedDB
+
+```
+- localStorage: 持久化存储用户设置、主题等
+- sessionStorage: 表单数据临时保存、页面间数据传递
+- Cookie: 用户认证、追踪
+- IndexedDB: 离线应用、大文件存储
 ```
