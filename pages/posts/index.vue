@@ -22,8 +22,8 @@ const postsGroupedByYear = computed(() => groupBy<Post>(getYear, currentPagePost
         </div>
       </template>
       <template v-for="[key, routes] of postsGroupedByYear" :key="key">
-        <div class="relative py-8">
-          <h2 class="year-title text-[120px] font-extralight absolute -top-12 -left-8 select-none pointer-events-none">
+        <div class="relative py-6">
+          <h2 class="text-xl font-medium text-zinc-800 dark:text-zinc-200">
             {{ key }}
           </h2>
         </div>
@@ -41,28 +41,3 @@ const postsGroupedByYear = computed(() => groupBy<Post>(getYear, currentPagePost
     <Back />
   </main>
 </template>
-
-<style scoped>
-.year-title {
-  font-family: "Inter", "SF Pro Display", -apple-system, sans-serif;
-  color: rgba(0, 0, 0, 0.035);
-  letter-spacing: -0.08em;
-  transform: translateZ(0);
-  transition: all 0.3s ease;
-  font-feature-settings: "tnum" 1;
-}
-
-:root.dark .year-title {
-  color: rgba(255, 255, 255, 0.035);
-}
-
-@media (hover: hover) {
-  .year-title:hover {
-    color: rgba(0, 0, 0, 0.05);
-  }
-
-  :root.dark .year-title:hover {
-    color: rgba(255, 255, 255, 0.05);
-  }
-}
-</style>

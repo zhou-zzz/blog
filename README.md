@@ -23,13 +23,13 @@
 
 ```bash
 # 安装依赖
-pnpm install
+npm install
 
 # 启动开发服务器
-pnpm dev
+npm dev
 
 # 代码格式检查
-pnpm lint
+npm lint
 
 # 代码格式修复
-pnpm lint:fix
+npm lint:fix
