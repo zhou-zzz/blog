@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import usePagination from '~/hooks/usePagination'
 import type { Post } from '~/types/types'
+import usePagination from '~/hooks/usePagination'
 import { getYear, groupBy } from '~/utils/groupBy'
 
 const notes = await queryContent('/life').find() as Post[]

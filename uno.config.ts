@@ -1,4 +1,4 @@
-import { defineConfig, presetAttributify, presetIcons, presetUno, presetWebFonts } from 'unocss'
+import { defineConfig, presetAttributify, presetIcons, presetTypography, presetWebFonts, presetWind3 } from 'unocss'
 
 export default defineConfig({
   presets: [
@@ -11,12 +11,13 @@ export default defineConfig({
       },
     }),
     presetAttributify(),
-    presetUno(),
+    presetWind3(),
     presetWebFonts({
       fonts: {
         sans: 'Inter:400,600,800',
         mono: 'DM Mono',
       },
     }),
+    presetTypography(),
   ],
 })

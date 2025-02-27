@@ -61,30 +61,30 @@ function toggleDark(event: MouseEvent) {
 
 <template>
   <header class="p8 text-gray-700">
-    <NuxtLink to="/" class="w-6 h-6 absolute lg:fixed select-none outline-none op70 hover:op100  dark:color-white">
+    <NuxtLink to="/" class="absolute h-6 w-6 select-none op70 outline-none lg:fixed dark:color-white hover:op100">
       <img src="/logo.png" alt="">
     </NuxtLink>
-    <nav class="flex justify-end items-center gap6">
-      <NuxtLink to="/posts" title="Blog" class="op70 hover:op100  dark:color-white">
+    <nav class="flex items-center justify-end gap6">
+      <NuxtLink to="/posts" title="Blog" class="op70 dark:color-white hover:op100">
         <span class="lt-sm:hidden">Blog</span>
         <div i-ri-article-line sm:hidden />
       </NuxtLink>
-      <NuxtLink to="/notes" title="Notes" class="op70 hover:op100  dark:color-white">
+      <NuxtLink to="/notes" title="Notes" class="op70 dark:color-white hover:op100">
         <span class="lt-sm:hidden">Notes</span>
         <div i-ri-book-line sm:hidden />
       </NuxtLink>
-      <NuxtLink to="/life" title="Life" class="op70 hover:op100 dark:color-white">
+      <NuxtLink to="/life" title="Life" class="op70 dark:color-white hover:op100">
         <span class="lt-sm:hidden">Life</span>
         <div i-ri-camera-line sm:hidden />
       </NuxtLink>
-      <NuxtLink to="/projects" title="Projects" class="op70 hover:op100 dark:color-white">
+      <NuxtLink to="/projects" title="Projects" class="op70 dark:color-white hover:op100">
         <span class="lt-sm:hidden">Projects</span>
         <div i-ri-lightbulb-line class="sm:hidden" />
       </NuxtLink>
-      <a href="https://github.com/zhou-zzz" target="_blank" title="GitHub" class="op70 hover:op100 dark:color-white">
+      <a href="https://github.com/zhou-zzz" target="_blank" title="GitHub" class="op70 dark:color-white hover:op100">
         <div i-uil-github-alt />
       </a>
-      <div i-carbon-sun dark:i-carbon-moon class=" cursor-pointer op70 hover:op100 dark:color-white" title="Toggle theme" @click="toggleDark" />
+      <div i-carbon-sun dark:i-carbon-moon class="cursor-pointer op70 dark:color-white hover:op100" title="Toggle theme" @click="toggleDark" />
     </nav>
   </header>
 </template>

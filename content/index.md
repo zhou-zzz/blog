@@ -17,4 +17,4 @@ plum: true
 - 善于团队协作，乐于技术分享
 
 在 GitHub 上找到我:
-:icon{name="uil-github-alt"} [github](https://github.com/zhou-zzz)
+[github](https://github.com/zhou-zzz)
